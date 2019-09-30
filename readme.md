@@ -1,9 +1,9 @@
 
 # unblocker
 
-Unblocker最初是用于Web代理,用于代理和重写远程网页的通用库。类似于CGIproxy / PHProxy / Glype
+Unblocker 是用于Web代理,用于代理和重写远程网页的通用库。类似于CGIproxy / PHProxy / Glype
 
-### The magic part
+### 神奇的部分
 
 无需修改即可处理相对路径的链接。(E.g. `<a href="path/to/file2.html"></a>`)
 
@@ -11,7 +11,7 @@ Unblocker最初是用于Web代理,用于代理和重写远程网页的通用库�
 
 通过调整Cookie的路径来代理Cookie，并做了一些额外的工作来确保它们在切换协议或子域时保持完整。
 
-### Limitations
+### 局限性
 
 尽管该代理对于标准登录表单甚至大多数AJAX内容都适用，但OAuth登录表单以及任何使用postMessage的东西（Google，Facebook等）都不太可能立即可用 。这不是一个无法解决的问题，但我也不希望在短期内解决这个问题。欢迎使用修补程序，包括用于主库的通用修补程序和用于示例文件夹的特定于站点的修补程序。
 
@@ -49,25 +49,25 @@ Unblocker支持以下配置选项，显示默认值:
 
 ```js
 {
-    prefix ： ' / proxy / '，   //代理URL的起始路径。由于少数情况，不建议使用“ /”。
-    host ： null，//重定向中使用的主机（例如`example.com`或`localhost：8080`）。默认行为是根据请求标头确定此行为。
-    requestMiddleware ： []，// //在将客户端请求发送到远程服务器之前对它们进行额外处理的函数数组。API详细说明如下。
-    responseMiddleware ： []，//在将远程响应发送回客户端之前对远程响应执行额外处理的函数数组。API详细说明如下。
-    standardMiddleware ： true，//如果需要执行请求或响应的高级自定义，则可以禁用所有内置的中间件。
-    processContentTypes ： [ //所有用于修改响应内容的内置中间件都将自身限制为这些内容类型。
-        ' text / html '，
-         ' application / xml + xhtml '，
-         ' application / xhtml + xml '，
-         ' text / css“
-    ]
-    httpAgent ： null，//重写代理，用于从服务器请求HTTP响应。请参阅https://nodejs.org/api/http.html#http_class_http_agent 
-    httpsAgent ： null  //覆盖用于从服务器请求https响应的代理。请参阅https://nodejs.org/api/https.html#https_class_https_agent 
+    prefix: '/proxy/',  // 代理URL的起始路径
+    host: null, // 重定向中使用的主机（例如`example.com`或`localhost：8080`）。默认行为是根据请求标头确定此行为
+    requestMiddleware: [], // 在将客户端请求发送到远程服务器之前对它们进行额外处理的函数数组。API详细说明如下。
+    responseMiddleware: [], // 在将远程响应发送回客户端之前对远程响应执行额外处理的函数数组。API详细说明如下。
+    standardMiddleware: true, // 如果需要执行请求或响应的高级自定义，则可以禁用所有内置的中间件。
+    processContentTypes: [ // 所有用于修改响应内容的内置中间件都将自身限制为这些内容类型。
+        'text/html',
+        'application/xml+xhtml',
+        'application/xhtml+xml',
+        'text/css'
+    ],
+    httpAgent: null, // 重写代理，用于从服务器请求HTTP响应 请参阅https://nodejs.org/api/http.html#http_class_http_agent
+    httpsAgent: null // 覆盖用于从服务器请求https响应的代理。请参阅https://nodejs.org/api/https.html#https_class_https_agent
 }
 ```
 
 #### 定制中间件
 
-Unblocker“中间件”是一些小功能，可让您检查和修改请求和响应。Unblocker的大多数内部逻辑都隐含为中间件，并且可以编写自定义中间件来扩充或替换内置的中间件。
+Unblocker `middleware`是一个小的方法库，可让您检查和修改请求和响应。Unblocker的大多数内部逻辑都隐含为中间件，并且可以编写自定义中间件来扩充或替换内置的中间件。
 
 自定义中间件应该是一个接受单个data参数并同步运行的函数。
 
