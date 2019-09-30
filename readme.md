@@ -1,3 +1,23 @@
+
+# unblocker
+
+Unblocker最初是用于Web代理,用于代理和重写远程网页的通用库。类似于CGIproxy / PHProxy / Glype
+
+### The magic part
+
+无需修改即可处理相对路径的链接。(E.g. `<a href="path/to/file2.html"></a>`)
+
+无需修改即可处理相对于根路径的链接。 (E.g. `<a href="/path/to/file2.html"></a>`)
+
+通过调整Cookie的路径来代理Cookie，并做了一些额外的工作来确保它们在切换协议或子域时保持完整。
+
+### Limitations
+
+尽管该代理对于标准登录表单甚至大多数AJAX内容都适用，但OAuth登录表单以及任何使用postMessage的东西（Google，Facebook等）都不太可能立即可用 。这不是一个无法解决的问题，但我也不希望在短期内解决这个问题。欢迎使用修补程序，包括用于主库的通用修补程序和用于示例文件夹的特定于站点的修补程序。
+
+
+## unblocker作为库使用
+
 ```
 npm i unblocker --s
 ```
@@ -22,109 +42,38 @@ app.get('/', function (req, res) {
 const server = http.createServer(app);
 server.listen(3001);
 ```
-# unblocker
 
-Unblocker was originally a web proxy for evading internet censorship, similar to CGIproxy / PHProxy / Glype but
-written in node.js. It's since morphed into a general-purpose library for proxying and rewriting remote webpages.
+### 配置选项
 
-All data is processed and relayed to the client on the fly without unnecessary buffering, making unblocker one of the
-fastest web proxies available.
-
-[![Build Status](https://travis-ci.org/nfriedly/node-unblocker.svg?branch=master)](https://travis-ci.org/nfriedly/node-unblocker)
-[![Dependency Status](https://david-dm.org/nfriedly/node-unblocker.svg)](https://david-dm.org/nfriedly/node-unblocker)
-[![npm-version](https://img.shields.io/npm/v/unblocker.svg)](https://www.npmjs.com/package/unblocker)
-
-### The magic part
-
-The script uses "pretty" urls which, besides looking pretty, allow links with relative paths
-to just work without modification. (E.g. `<a href="path/to/file2.html"></a>`)
-
-In addition to this, links that are relative to the root (E.g. `<a href="/path/to/file2.html"></a>`)
-can be handled without modification by checking the referrer and 307 redirecting them to the proper
-location in the referring site. (Although the proxy does attempt to rewrite these links to avoid the redirect.)
-
-Cookies are proxied by adjusting their path to include the proxy's URL, and a bit of extra work is done to ensure they
-remain intact when switching protocols or subdomains.
-
-### Limitations
-
-Although the proxy works well for standard login forms and even most AJAX content, OAuth login forms and anything that uses
-[postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) (Google, Facebook, etc.) are not
-likely to work out of the box. This is not an insurmountable issue, but it's not one that I expect to have fixed in the
-near term. Patches are welcome, including both a general-purpose fix to go into the main library, and site-specific
-fixes to go in the examples folder.
-
-## Running the website on your computer
-
-See https://github.com/nfriedly/nodeunblocker.com
-
-## Using unblocker as a library in your software
-
-    npm install --save unblocker
-
-Unblocker exports an [express](http://expressjs.com/)-compatible API, so using in an express application is trivial:
-
-    const express = require('express')
-    const Unblocker = require('unblocker');
-    const app = express();
-    const http = require('http')
-
-    // this must be one of the first app.use() calls and must not be on a subdirectory to work properly
-    app.use(new Unblocker({ prefix: '/proxy/' }));
-
-    app.get('/', function (req, res) {
-      res.send('init');
-    });
-
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-const server = http.createServer(app);
-server.listen(3001);
-
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-const server = http.createServer(app);
-server.listen(3001);
-
-Usage without express is similarly easy, see [examples/simple/server.js](examples/simple/server.js) for an example.
-
-### Configuration
-
-Unblocker supports the following configuration options, defaults are shown:
+Unblocker支持以下配置选项，显示默认值:
 
 ```js
 {
-    prefix: '/proxy/',  // Path that the proxied URLs begin with. '/' is not recommended due to a few edge cases.
-    host: null, // Host used in redirects (e.g `example.com` or `localhost:8080`). Default behavior is to determine this from the request headers.
-    requestMiddleware: [], // Array of functions that perform extra processing on client requests before they are sent to the remote server. API is detailed below.
-    responseMiddleware: [], // Array of functions that perform extra processing on remote responses before they are sent back to the client. API is detailed below.
-    standardMiddleware: true, // Allows you to disable all built-in middleware if you need to perform advanced customization of requests or responses.
-    processContentTypes: [ // All  built-in middleware that modifies the content of responses limits itself to these content-types.
-        'text/html',
-        'application/xml+xhtml',
-        'application/xhtml+xml',
-        'text/css'
-    ],
-    httpAgent: null, //override agent used to request http response from server. see https://nodejs.org/api/http.html#http_class_http_agent
-    httpsAgent: null //override agent used to request https response from server. see https://nodejs.org/api/https.html#https_class_https_agent
+    prefix ： ' / proxy / '，   //代理URL的起始路径。由于少数情况，不建议使用“ /”。
+    host ： null，//重定向中使用的主机（例如`example.com`或`localhost：8080`）。默认行为是根据请求标头确定此行为。
+    requestMiddleware ： []，// //在将客户端请求发送到远程服务器之前对它们进行额外处理的函数数组。API详细说明如下。
+    responseMiddleware ： []，//在将远程响应发送回客户端之前对远程响应执行额外处理的函数数组。API详细说明如下。
+    standardMiddleware ： true，//如果需要执行请求或响应的高级自定义，则可以禁用所有内置的中间件。
+    processContentTypes ： [ //所有用于修改响应内容的内置中间件都将自身限制为这些内容类型。
+        ' text / html '，
+         ' application / xml + xhtml '，
+         ' application / xhtml + xml '，
+         ' text / css“
+    ]
+    httpAgent ： null，//重写代理，用于从服务器请求HTTP响应。请参阅https://nodejs.org/api/http.html#http_class_http_agent 
+    httpsAgent ： null  //覆盖用于从服务器请求https响应的代理。请参阅https://nodejs.org/api/https.html#https_class_https_agent 
 }
 ```
 
-#### Custom Middleware
+#### 定制中间件
 
-Unblocker "middleware" are small functions that allow you to inspect and modify requests and responses. The majority of Unblocker's internal logic is implimented as middleware, and it's possible to write custom middleware to augment or replace the built-in middleware.
+Unblocker“中间件”是一些小功能，可让您检查和修改请求和响应。Unblocker的大多数内部逻辑都隐含为中间件，并且可以编写自定义中间件来扩充或替换内置的中间件。
 
-Custom middleware should be a function that accepts a single `data` argument and runs synchronously.
+自定义中间件应该是一个接受单个data参数并同步运行的函数。
 
-To process request and response data, create a [Transform Stream](https://nodejs.org/api/stream.html#stream_class_stream_transform) to perform the processing in chunks and pipe through this stream. (Example below.)
+要处理请求和响应数据，请创建一个转换流以大块形式执行处理，并通过该流进行管道传输。（下面的示例。）
 
-To respond directly to a request, add a function to `config.requestMiddleware` that handles the `clientResponse` (a standard [http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse) when used directly, or a [Express Response](http://expressjs.com/en/4x/api.html#res) when used with Express. Once a response is sent, no further middleware will be executed for that request. (Example below.)
+要直接响应请求，请在其上添加一个函数来config.requestMiddleware处理clientResponse（直接使用时为标准http.ServerResponse，或者与Express一起使用时为Express Response。发送响应后，将不再对该请求执行任何中间件。（下面的示例。）
 
 ##### requestMiddleware
 
@@ -141,8 +90,7 @@ Data example:
 }
 ```
 
-requestMiddleware may inspect the headers, url, etc. It can modify headers, pipe PUT/POST data through a transform stream, or respond to the request directly.
-If you're using express, the request and response objects will have all of the usual express goodies. For example:
+requestMiddleware可以检查标头，URL等。它可以修改标头，通过转换流传递PUT / POST数据或直接响应请求。如果使用Express，则请求和响应对象将具有所有通常的Express好东西。例如：
 
 ```js
 function validateRequest(data) {
@@ -157,13 +105,9 @@ var config = {
 }
 ```
 
-If any piece of middleware sends a response, no further middleware is run.
-
-After all requestMiddleware has run, the request is forwarded to the remote server with the (potentially modified) url/headers/stream/etc.
-
 ##### responseMiddleware
 
-responseMiddleware receives the same `data` object as the requestMiddleware, but the `headers` and `stream` fields are replaced with those of the remote server's response, and several new fields are added for the remote request and response:
+responseMiddleware接收与datarequestMiddleware 相同的对象，但是将headers和stream字段替换为远程服务器的响应对象，并为远程请求和响应添加了几个新字段：
 
 Data example:
 ```js
@@ -181,7 +125,7 @@ Data example:
 }
 ```
 
-For modifying content, create a new stream and then pipe `data.stream` to it and replace `data.stream` with it:
+要修改内容，请创建一个新的流，然后通过管道 `data.stream` 将其传输并替换 `data.stream` 为:
 
 ```js
 var Transform = require('stream').Transform;
@@ -209,31 +153,41 @@ var config = {
 }
 ```
 
-See `examples/nodeunblocker.com/app.js` for another example of adding a bit of middleware. Also, see any of the built-in middleware in the `lib/` folder.
+##### 内置中间件
 
+代理的大多数内部功能也实现为中间件:
 
-##### Built-in Middleware
+* **host**: 更正传出响应头
 
-Most of the internal functionality of the proxy is also implemented as middleware:
+* **referer**: 更正传出请求头
 
-* **host**: Corrects the `host` header in outgoing responses
-* **referer**: Corrects the `referer` header in outgoing requests
 * **cookies**:
-    Fixes the `Path` attribute of set-cookie headers to limit cookies to their "path" on the proxy (e.g. `Path=/proxy/http://example.com/`).
-    Also injects redirects to copy cookies from between protocols and subdomains on a given domain.
-* **hsts**: Removes [Strict-Transport-Security](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security) headers because they can leak to other sites and can break the proxy.
-* **hpkp**: Removes [Public-Key-Pinning](https://en.wikipedia.org/wiki/HTTP_Public_Key_Pinning) headers because they can leak to other sites and can break the proxy.
-* **csp**: Removes [Content-Security-Policy](https://en.wikipedia.org/wiki/Content_Security_Policy) headers because they can leak to other sites and can break the proxy.
-* **redirects**: Rewrites urls in 3xx redirects to ensure they go through the proxy
-* **decompress**: Decompresses `Content-Encoding: gzip|deflate` responses and also tweaks request headers to ask for either gzip-only or no compression at all. (It will attempt to decompress `deflate` content, but there are some issues, so it does not advertise support for `deflate`.)
-* **charsets**: Converts the charset of responses to UTF-8 for safe string processing in node.js. Determines charset from headers or meta tags and rewrites all headers and meta tags in outgoing response.
-* **urlPrefixer**: Rewrites URLS of links/images/css/etc. to ensure they go through the proxy
-* **metaRobots**: Injects a ROBOTS: NOINDEX, NOFOLLOW meta tag to prevent search engines from crawling the entire web through the proxy.
-* **contentLength**: Deletes the content-length header on responses if the body was modified.
 
-Setting the `standardMiddleware` configuration option to `false` disables all built-in middleware, allowing you to selectively enable, configure, and re-order the built-in middleware.
+修复设置cookie头的`Path`属性，将cookie限制为其在代理上的`Path`(e.g. `Path=/proxy/http://example.com/`)。
 
-This configuration would mimic the defaults:
+还插入重定向以从给定域上的协议和子域之间复制cookie。
+
+* **hsts**：删除[Strict-Transport-Security](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security)，因为它们可能泄漏到其他站点并可能破坏代理。
+
+* **hpkp**：删除[Public-Key-Pinning](https://en.wikipedia.org/wiki/HTTP_Public_Key_Pinning)，因为它们可能泄漏到其他站点并可能破坏代理。
+
+* **CSP**：删除[Content-Security-Policy](https://en.wikipedia.org/wiki/Content_Security_Policy)，因为它们可能泄漏到其他站点并可能破坏代理。
+
+* **redirects**：重写3xx重定向中的url以确保它们通过代理
+
+* **decompress**：解压`Content-Encoding: gzip|deflate`响应，并调整请求头以请求仅使用gzip或根本不使用压缩。（它将尝试解压缩`deflate`内容，但存在一些问题，因此它不公布对`deflate`的支持。）
+
+* **charsets**：将响应的字符集转换为UTF-8，以便在node.js中进行安全的字符串处理。从头或元标记确定字符集，并重写传出响应中的所有头和元标记。
+
+* **urlpeffixer**：重写`links/images/css/etc`，以确保它们通过代理。
+
+* **metaRobots**：注入ROBOTS: NOINDEX, NOFOLLOW meta tag，以防止搜索引擎通过代理爬行整个web。
+
+* **contentLength**：如果修改了正文，则删除`content-length`响应头。
+
+将`standardMiddleware`配置选项设置为`false`将禁用所有内置中间件，允许您有选择地启用、配置和重新排序内置中间件。
+
+此配置将模拟默认设置：
 
 ```js
 
@@ -292,24 +246,21 @@ app.use(new Unblocker(config));
 
 ## Debugging
 
-Unblocker is fully instrumented with [debug](https://www.npmjs.com/package/debug).
-Enable debugging via environment variables:
+Unblocker 通过环境变量启用调试:
 
     DEBUG=unblocker:* node mycoolapp.js
 
-There is also a middleware debugger that adds extra debugging middleware before and after each existing middleware
-function to report on changes. It's included with the default DEBUG activation and may also be selectively enabled:
-
+还有一个中间件调试器，可在每个现有中间件功能之前和之后添加额外的调试中间件以报告更改。它包含在默认的DEBUG激活中，也可以有选择地启用：
 
     DEBUG=unblocker:middleware node mycoolapp.js
 
-... or disabled:
+... 或 禁用:
 
     DEBUG=*,-unblocker:middleware node mycoolapp.js
 
-## Troubleshooting
+## 故障排除
 
-If you're using Nginx as a reverse proxy, you probably need to disable `merge_slashes` to avoid endless redirects and/or other issues:
+如果您将Nginx用作反向代理，则可能需要禁用该功能`merge_slashes`以避免无止境的重定向和/或其他问题
 
     merge_slashes off;
 
