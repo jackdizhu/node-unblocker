@@ -1,3 +1,27 @@
+```
+npm i unblocker --s
+```
+```js
+const express = require('express')
+const Unblocker = require('unblocker');
+const app = express();
+const http = require('http')
+
+// this must be one of the first app.use() calls and must not be on a subdirectory to work properly
+app.use(new Unblocker({ prefix: '/proxy/' }));
+
+app.get('/', function (req, res) {
+  res.send('init');
+});
+
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+const server = http.createServer(app);
+server.listen(3001);
+```
 # unblocker
 
 Unblocker was originally a web proxy for evading internet censorship, similar to CGIproxy / PHProxy / Glype but
