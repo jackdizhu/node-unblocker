@@ -40,16 +40,25 @@ See https://github.com/nfriedly/nodeunblocker.com
 
 Unblocker exports an [express](http://expressjs.com/)-compatible API, so using in an express application is trivial:
 
-    var express = require('express')
-    var Unblocker = require('unblocker');
-    var app = express();
+    const express = require('express')
+    const Unblocker = require('unblocker');
+    const app = express();
+    const http = require('http')
 
     // this must be one of the first app.use() calls and must not be on a subdirectory to work properly
-    app.use(new Unblocker({prefix: '/proxy/'}));
+    app.use(new Unblocker({ prefix: '/proxy/' }));
 
-    app.get('/', function(req, res) {
-        //...
+    app.get('/', function (req, res) {
+      res.send('init');
     });
+
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+const server = http.createServer(app);
+server.listen(3001);
 
 Usage without express is similarly easy, see [examples/simple/server.js](examples/simple/server.js) for an example.
 
