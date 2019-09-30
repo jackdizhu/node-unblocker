@@ -60,6 +60,14 @@ Unblocker exports an [express](http://expressjs.com/)-compatible API, so using i
 const server = http.createServer(app);
 server.listen(3001);
 
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+const server = http.createServer(app);
+server.listen(3001);
+
 Usage without express is similarly easy, see [examples/simple/server.js](examples/simple/server.js) for an example.
 
 ### Configuration
